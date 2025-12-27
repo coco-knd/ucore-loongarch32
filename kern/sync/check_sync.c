@@ -185,12 +185,17 @@ void phi_take_forks_condvar(int i) {
 #ifdef LAB7_EX1
 //--------into routine in monitor--------------
      // LAB7 EXERCISE1: YOUR CODE
-     // I am hungry
-     // try to get fork
-     // I am hungry
-      
-     // try to get fork
-
+     // 1. 设置状态为饥饿
+     state_condvar[i] = HUNGRY;
+     
+     // 2. 尝试获取叉子（测试左右邻居是否在吃）
+     // phi_test_condvar 函数会检查条件，如果满足则将状态设为 EATING 并 signal 自身
+     phi_test_condvar(i);
+     
+     // 3. 如果没拿到叉子（状态不是 EATING），则在条件变量上等待
+     if (state_condvar[i] != EATING) {
+         cond_wait(&mtp->cv[i]);
+     }
 //--------leave routine in monitor--------------
 #endif
       if(mtp->next_count>0)
@@ -204,13 +209,16 @@ void phi_put_forks_condvar(int i) {
 #ifdef LAB7_EX1
 //--------into routine in monitor--------------
      // LAB7 EXERCISE1: YOUR CODE
-     // I ate over
-     // test left and right neighbors
-     // I ate over 
-      
-     // test left and right neighbors
-      
-      
+     // 1. 设置状态为思考（停止进餐）
+     state_condvar[i] = THINKING;
+     
+     // 2. 测试左邻居是否想吃且能吃
+     // 如果左邻居处于 HUNGRY 状态且其左右都不在吃，phi_test_condvar 会唤醒他
+     phi_test_condvar(LEFT);
+     
+     // 3. 测试右邻居是否想吃且能吃
+     phi_test_condvar(RIGHT);
+
 //--------leave routine in monitor--------------
 #endif
      if(mtp->next_count>0)

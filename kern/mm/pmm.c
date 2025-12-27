@@ -638,7 +638,15 @@ int copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end, bool shar
        * (3) memory copy from src_kvaddr to dst_kvaddr, size is PGSIZE
        * (4) build the map of phy addr of  nage with the linear addr start
        */
-
+      /* LAB5 EXERCISE2: YOUR CODE */
+        // 1. 获取源页面的内核虚拟地址
+        void *src_kvaddr = page2kva(page);
+        // 2. 获取目标页面的内核虚拟地址
+        void *dst_kvaddr = page2kva(npage);
+        // 3. 复制内容
+        memcpy(dst_kvaddr, src_kvaddr, PGSIZE);
+        // 4. 建立映射
+        ret = page_insert(to, npage, start, perm);
 #endif
       assert(ret == 0);
     }
