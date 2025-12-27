@@ -18,10 +18,13 @@ static void reload_timer()
 int clock_int_handler(void * data)
 {
 #ifdef LAB1_EX4
-  // LAB1 EXERCISE4: YOUR CODE
-  // (1) count ticks here
+  //计数器加1
+  ticks++;
 #ifdef _SHOW_100_TICKS
-  // (2) if ticks % 100 == 0 then call kprintf to print "100 ticks"
+  //每100次中断打印一次 "100 ticks"
+  if (ticks % 100 == 0) {
+        kprintf("100 ticks\n");
+    }
 #endif
 #endif
 #ifdef LAB7_EX1
